@@ -25,4 +25,20 @@
     .touch-manipulation {
         touch-action: manipulation;
     }
+    /* Safe area for notched phones (e.g. iPhone) */
+    .safe-area-pad {
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+    }
+}
+
+/* Mobile nav: hamburger to X when open */
+#nav-toggle:checked ~ .nav-hamburger .nav-hamburger-line:first-child {
+    transform: translateY(0.5rem) rotate(45deg);
+}
+#nav-toggle:checked ~ .nav-hamburger .nav-hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+#nav-toggle:checked ~ .nav-hamburger .nav-hamburger-line:last-child {
+    transform: translateY(-0.5rem) rotate(-45deg);
 }

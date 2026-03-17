@@ -18,13 +18,15 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 </head>
-<body class="bg-charcoal text-zinc-200 font-sans antialiased min-h-screen">
-    <div class="min-h-screen flex flex-col">
+<body class="bg-charcoal text-zinc-200 font-sans antialiased min-h-screen overflow-x-hidden">
+    <div class="min-h-screen flex flex-col overflow-x-hidden">
         {{-- Navigation --}}
         <header class="fixed top-0 left-0 right-0 z-50 border-b border-zinc-800/80 bg-charcoal/90 backdrop-blur-md">
-            <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                <a href="#hero" class="font-heading font-bold text-lg text-white tracking-tight">MA</a>
-                <div class="flex items-center gap-4 sm:gap-6 text-sm">
+            <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-4 safe-area-pad">
+                <a href="#hero" class="font-heading font-bold text-lg text-white tracking-tight shrink-0">MA</a>
+
+                {{-- Desktop nav --}}
+                <div class="hidden md:flex items-center gap-4 lg:gap-6 text-sm">
                     <a href="#projects" class="text-zinc-400 hover:text-accent transition-colors">{{ __('portfolio.nav_projects') }}</a>
                     <a href="#skills" class="text-zinc-400 hover:text-accent transition-colors">{{ __('portfolio.nav_skills') }}</a>
                     <a href="#why-hire" class="text-zinc-400 hover:text-accent transition-colors">{{ __('portfolio.nav_why_hire') }}</a>
@@ -34,28 +36,49 @@
                         <a href="{{ route('locale.switch', 'ar') }}" class="px-2.5 py-1 rounded-md text-xs font-medium {{ $locale === 'ar' ? 'bg-accent text-charcoal' : 'text-zinc-400 hover:text-white' }} transition-colors">العربية</a>
                     </div>
                 </div>
+
+                {{-- Mobile: hamburger + overlay menu --}}
+                <input type="checkbox" id="nav-toggle" class="peer sr-only" aria-hidden="true">
+                <label for="nav-toggle" class="nav-hamburger md:hidden flex flex-col justify-center w-10 h-10 rounded-lg border border-zinc-600 text-zinc-400 hover:text-white cursor-pointer touch-manipulation shrink-0" aria-label="{{ $locale === 'ar' ? 'القائمة' : 'Menu' }}">
+                    <span class="nav-hamburger-line block w-5 h-0.5 bg-current rounded mb-1.5 transition-transform origin-center"></span>
+                    <span class="nav-hamburger-line block w-5 h-0.5 bg-current rounded mb-1.5 transition-opacity"></span>
+                    <span class="nav-hamburger-line block w-5 h-0.5 bg-current rounded transition-transform origin-center"></span>
+                </label>
+                <div class="fixed inset-0 top-14 sm:top-16 z-40 bg-charcoal/98 backdrop-blur-md md:hidden opacity-0 invisible pointer-events-none peer-checked:opacity-100 peer-checked:visible peer-checked:pointer-events-auto transition-all duration-200">
+                    <div class="flex flex-col gap-1 p-4 pt-6">
+                        <a href="#projects" class="py-3 px-4 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white text-base" onclick="document.getElementById('nav-toggle').checked = false">{{ __('portfolio.nav_projects') }}</a>
+                        <a href="#skills" class="py-3 px-4 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white text-base" onclick="document.getElementById('nav-toggle').checked = false">{{ __('portfolio.nav_skills') }}</a>
+                        <a href="#why-hire" class="py-3 px-4 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white text-base" onclick="document.getElementById('nav-toggle').checked = false">{{ __('portfolio.nav_why_hire') }}</a>
+                        <a href="#contact" class="py-3 px-4 rounded-lg text-accent font-medium text-base" onclick="document.getElementById('nav-toggle').checked = false">{{ __('portfolio.nav_contact') }}</a>
+                        <div class="flex items-center gap-2 mt-4 pt-4 border-t border-zinc-700">
+                            <span class="text-zinc-500 text-sm">{{ $locale === 'ar' ? 'اللغة' : 'Language' }}</span>
+                            <a href="{{ route('locale.switch', 'en') }}" class="px-3 py-2 rounded-lg text-sm font-medium {{ $locale === 'en' ? 'bg-accent text-charcoal' : 'text-zinc-400 bg-zinc-800' }}">EN</a>
+                            <a href="{{ route('locale.switch', 'ar') }}" class="px-3 py-2 rounded-lg text-sm font-medium {{ $locale === 'ar' ? 'bg-accent text-charcoal' : 'text-zinc-400 bg-zinc-800' }}">العربية</a>
+                        </div>
+                    </div>
+                </div>
             </nav>
         </header>
 
-        <main class="flex-1 pt-16">
+        <main class="flex-1 pt-14 sm:pt-16">
             {{-- Hero Section --}}
-            <section id="hero" class="relative overflow-hidden py-20 sm:py-28 lg:py-36">
+            <section id="hero" class="relative overflow-hidden py-12 sm:py-20 lg:py-28 xl:py-36">
                 <div class="absolute inset-0 bg-gradient-to-b from-charcoal via-charcoal to-charcoal-dark pointer-events-none" aria-hidden="true"></div>
-                <div class="absolute top-20 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
-                <div class="container relative mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
-                    <p class="text-accent font-semibold text-sm uppercase tracking-widest mb-4">{{ __('portfolio.hero_badge') }}</p>
-                    <h1 class="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-white leading-tight tracking-tight max-w-4xl">
+                <div class="absolute top-20 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+                <div class="container relative mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl w-full box-border">
+                    <p class="text-accent font-semibold text-xs sm:text-sm uppercase tracking-widest mb-3 sm:mb-4">{{ __('portfolio.hero_badge') }}</p>
+                    <h1 class="font-heading font-bold text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white leading-tight tracking-tight max-w-4xl break-words">
                         {{ __('portfolio.hero_title') }}
                     </h1>
-                    <p class="mt-6 text-lg sm:text-xl text-zinc-400 max-w-2xl leading-relaxed">
+                    <p class="mt-4 sm:mt-6 text-base sm:text-lg lg:text-xl text-zinc-400 max-w-2xl leading-relaxed">
                         {{ __('portfolio.hero_subtitle') }}
                     </p>
-                    <div class="mt-10 flex flex-wrap gap-4">
-                        <a href="#contact" class="inline-flex items-center gap-2 px-6 py-3 bg-accent text-charcoal font-semibold rounded-lg hover:bg-accent-hover transition-colors">
+                    <div class="mt-8 sm:mt-10 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
+                        <a href="#contact" class="inline-flex items-center justify-center gap-2 min-h-[44px] px-5 sm:px-6 py-3 bg-accent text-charcoal font-semibold rounded-lg hover:bg-accent-hover transition-colors touch-manipulation w-full sm:w-auto">
                             {{ __('portfolio.cta_primary') }}
                             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </a>
-                        <a href="#contact" class="inline-flex items-center gap-2 px-6 py-3 border border-zinc-600 text-zinc-300 font-medium rounded-lg hover:border-accent hover:text-accent transition-colors">
+                        <a href="#contact" class="inline-flex items-center justify-center gap-2 min-h-[44px] px-5 sm:px-6 py-3 border border-zinc-600 text-zinc-300 font-medium rounded-lg hover:border-accent hover:text-accent transition-colors touch-manipulation w-full sm:w-auto">
                             {{ __('portfolio.cta_secondary') }}
                         </a>
                     </div>
@@ -63,23 +86,23 @@
             </section>
 
             {{-- Featured Projects (Bento Grid) --}}
-            <section id="projects" class="py-16 sm:py-24 lg:py-32 border-t border-zinc-800/50">
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-                    <h2 class="font-heading font-bold text-3xl sm:text-4xl text-white mb-2">{{ __('portfolio.projects_title') }}</h2>
-                    <p class="text-zinc-400 text-lg max-w-2xl mb-12">{{ __('portfolio.projects_subtitle') }}</p>
+            <section id="projects" class="py-12 sm:py-20 lg:py-28 border-t border-zinc-800/50">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl w-full box-border">
+                    <h2 class="font-heading font-bold text-2xl sm:text-3xl lg:text-4xl text-white mb-2">{{ __('portfolio.projects_title') }}</h2>
+                    <p class="text-zinc-400 text-base sm:text-lg max-w-2xl mb-8 sm:mb-12">{{ __('portfolio.projects_subtitle') }}</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {{-- ASSAB - spans 2 cols on lg --}}
-                        <article class="lg:col-span-2 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8 hover:border-accent/50 transition-colors group">
-                            <div class="flex items-start justify-between gap-4 mb-4">
-                                <h3 class="font-heading font-bold text-xl sm:text-2xl text-white group-hover:text-accent transition-colors">ASSAB</h3>
-                                <span class="text-xs font-medium text-accent bg-accent/10 px-2.5 py-1 rounded-full">{{ __('portfolio.assab_badge') }}</span>
+                        <article class="lg:col-span-2 rounded-xl sm:rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6 lg:p-8 hover:border-accent/50 transition-colors group min-w-0">
+                            <div class="flex flex-wrap items-start justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+                                <h3 class="font-heading font-bold text-lg sm:text-xl lg:text-2xl text-white group-hover:text-accent transition-colors break-words min-w-0">ASSAB</h3>
+                                <span class="text-xs font-medium text-accent bg-accent/10 px-2.5 py-1 rounded-full shrink-0">{{ __('portfolio.assab_badge') }}</span>
                             </div>
-                            <p class="text-zinc-400 text-sm sm:text-base leading-relaxed mb-2">
+                            <p class="text-zinc-400 text-sm sm:text-base leading-relaxed mb-2 break-words">
                                 {{ __('portfolio.assab_desc') }}
                             </p>
-                            <p class="text-zinc-300 text-sm font-medium mb-5">{{ __('portfolio.assab_vat') }}</p>
-                            <ul class="flex flex-wrap gap-2 mb-5">
+                            <p class="text-zinc-300 text-sm font-medium mb-4 sm:mb-5">{{ __('portfolio.assab_vat') }}</p>
+                            <ul class="flex flex-wrap gap-2 mb-4 sm:mb-5">
                                 <li class="text-xs text-zinc-500 bg-zinc-800/80 px-2.5 py-1 rounded-md">Laravel</li>
                                 <li class="text-xs text-zinc-500 bg-zinc-800/80 px-2.5 py-1 rounded-md">Multi-role</li>
                                 <li class="text-xs text-zinc-500 bg-zinc-800/80 px-2.5 py-1 rounded-md">AI Forecasting</li>
@@ -93,11 +116,11 @@
                         </article>
 
                         {{-- Saudi Real Estate ERP --}}
-                        <article class="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8 hover:border-accent/50 transition-colors group">
-                            <div class="flex items-start justify-between gap-4 mb-4">
-                                <h3 class="font-heading font-bold text-xl sm:text-2xl text-white group-hover:text-accent transition-colors">Saudi Real Estate ERP</h3>
+                        <article class="rounded-xl sm:rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6 lg:p-8 hover:border-accent/50 transition-colors group min-w-0">
+                            <div class="flex flex-wrap items-start justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+                                <h3 class="font-heading font-bold text-lg sm:text-xl lg:text-2xl text-white group-hover:text-accent transition-colors break-words min-w-0">Saudi Real Estate ERP</h3>
                             </div>
-                            <p class="text-zinc-400 text-sm sm:text-base leading-relaxed mb-5">
+                            <p class="text-zinc-400 text-sm sm:text-base leading-relaxed mb-4 sm:mb-5 break-words">
                                 {{ __('portfolio.saudi_desc') }}
                             </p>
                             <ul class="flex flex-wrap gap-2 mb-5">
@@ -112,12 +135,12 @@
                         </article>
 
                         {{-- Sporty Mate --}}
-                        <article class="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8 hover:border-accent/50 transition-colors group">
-                            <div class="flex items-start justify-between gap-4 mb-4">
-                                <h3 class="font-heading font-bold text-xl sm:text-2xl text-white group-hover:text-accent transition-colors">Sporty Mate</h3>
-                                <span class="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full">{{ __('portfolio.sporty_badge') }}</span>
+                        <article class="rounded-xl sm:rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6 lg:p-8 hover:border-accent/50 transition-colors group min-w-0">
+                            <div class="flex flex-wrap items-start justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+                                <h3 class="font-heading font-bold text-lg sm:text-xl lg:text-2xl text-white group-hover:text-accent transition-colors break-words min-w-0">Sporty Mate</h3>
+                                <span class="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full shrink-0">{{ __('portfolio.sporty_badge') }}</span>
                             </div>
-                            <p class="text-zinc-400 text-sm sm:text-base leading-relaxed mb-5">
+                            <p class="text-zinc-400 text-sm sm:text-base leading-relaxed mb-4 sm:mb-5 break-words">
                                 {{ __('portfolio.sporty_desc') }}
                             </p>
                             <ul class="flex flex-wrap gap-2 mb-5">
@@ -132,11 +155,11 @@
                         </article>
 
                         {{-- Al-Baraka & Al-Zukhruf - spans 2 cols on lg --}}
-                        <article class="lg:col-span-2 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8 hover:border-accent/50 transition-colors group">
-                            <div class="flex items-start justify-between gap-4 mb-4">
-                                <h3 class="font-heading font-bold text-xl sm:text-2xl text-white group-hover:text-accent transition-colors">Al-Baraka & Al-Zukhruf</h3>
+                        <article class="lg:col-span-2 rounded-xl sm:rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6 lg:p-8 hover:border-accent/50 transition-colors group min-w-0">
+                            <div class="flex flex-wrap items-start justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+                                <h3 class="font-heading font-bold text-lg sm:text-xl lg:text-2xl text-white group-hover:text-accent transition-colors break-words min-w-0">Al-Baraka & Al-Zukhruf</h3>
                             </div>
-                            <div class="space-y-4 text-zinc-400 text-sm sm:text-base leading-relaxed">
+                            <div class="space-y-3 sm:space-y-4 text-zinc-400 text-sm sm:text-base leading-relaxed break-words">
                                 <p>
                                     <strong class="text-zinc-300">{{ __('portfolio.albaraka_label') }}</strong> {{ __('portfolio.albaraka_desc') }}
                                 </p>
@@ -156,12 +179,12 @@
                         </article>
 
                         {{-- HAYAI --}}
-                        <article class="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8 hover:border-accent/50 transition-colors group">
-                            <div class="flex items-start justify-between gap-4 mb-4">
-                                <h3 class="font-heading font-bold text-xl sm:text-2xl text-white group-hover:text-accent transition-colors">HAYAI</h3>
-                                <span class="text-xs font-medium text-accent bg-accent/10 px-2.5 py-1 rounded-full">{{ __('portfolio.hayai_badge') }}</span>
+                        <article class="rounded-xl sm:rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6 lg:p-8 hover:border-accent/50 transition-colors group min-w-0">
+                            <div class="flex flex-wrap items-start justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+                                <h3 class="font-heading font-bold text-lg sm:text-xl lg:text-2xl text-white group-hover:text-accent transition-colors break-words min-w-0">HAYAI</h3>
+                                <span class="text-xs font-medium text-accent bg-accent/10 px-2.5 py-1 rounded-full shrink-0">{{ __('portfolio.hayai_badge') }}</span>
                             </div>
-                            <p class="text-zinc-400 text-sm sm:text-base leading-relaxed mb-2">
+                            <p class="text-zinc-400 text-sm sm:text-base leading-relaxed mb-2 break-words">
                                 {{ __('portfolio.hayai_desc') }}
                             </p>
                             <p class="text-zinc-300 text-sm font-medium mb-5">{{ __('portfolio.hayai_tech') }}</p>
@@ -181,13 +204,13 @@
             </section>
 
             {{-- Technical Skill Matrix --}}
-            <section id="skills" class="py-16 sm:py-24 lg:py-32 border-t border-zinc-800/50">
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-                    <h2 class="font-heading font-bold text-3xl sm:text-4xl text-white mb-2">{{ __('portfolio.skills_title') }}</h2>
-                    <p class="text-zinc-400 text-lg max-w-2xl mb-12">{{ __('portfolio.skills_subtitle') }}</p>
+            <section id="skills" class="py-12 sm:py-20 lg:py-28 border-t border-zinc-800/50">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl w-full box-border">
+                    <h2 class="font-heading font-bold text-2xl sm:text-3xl lg:text-4xl text-white mb-2">{{ __('portfolio.skills_title') }}</h2>
+                    <p class="text-zinc-400 text-base sm:text-lg max-w-2xl mb-8 sm:mb-12">{{ __('portfolio.skills_subtitle') }}</p>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                        <div class="rounded-xl sm:rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6 lg:p-8">
                             <h3 class="font-heading font-bold text-accent text-lg mb-4">{{ __('portfolio.skills_backend') }}</h3>
                             <ul class="space-y-2 text-zinc-400">
                                 <li>Laravel</li>
@@ -196,7 +219,7 @@
                                 <li>PostgreSQL</li>
                             </ul>
                         </div>
-                        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8">
+                        <div class="rounded-xl sm:rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6 lg:p-8">
                             <h3 class="font-heading font-bold text-accent text-lg mb-4">{{ __('portfolio.skills_architecture') }}</h3>
                             <ul class="space-y-2 text-zinc-400">
                                 <li>Microservices</li>
@@ -204,7 +227,7 @@
                                 <li>Multi-tenancy</li>
                             </ul>
                         </div>
-                        <div class="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 sm:p-8">
+                        <div class="rounded-xl sm:rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6 lg:p-8">
                             <h3 class="font-heading font-bold text-accent text-lg mb-4">{{ __('portfolio.skills_tools') }}</h3>
                             <ul class="space-y-2 text-zinc-400">
                                 <li>Cursor</li>
@@ -217,22 +240,22 @@
             </section>
 
             {{-- Why Hire Me --}}
-            <section id="why-hire" class="py-16 sm:py-24 lg:py-32 border-t border-zinc-800/50">
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-                    <h2 class="font-heading font-bold text-3xl sm:text-4xl text-white mb-6">{{ __('portfolio.why_hire_title') }}</h2>
-                    <blockquote class="text-xl sm:text-2xl text-zinc-300 leading-relaxed {{ $isRtl ? 'border-r-4 pr-6 sm:pr-8' : 'border-l-4 pl-6 sm:pl-8' }} border-accent">
+            <section id="why-hire" class="py-12 sm:py-20 lg:py-28 border-t border-zinc-800/50">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl w-full box-border">
+                    <h2 class="font-heading font-bold text-2xl sm:text-3xl lg:text-4xl text-white mb-4 sm:mb-6">{{ __('portfolio.why_hire_title') }}</h2>
+                    <blockquote class="text-lg sm:text-xl lg:text-2xl text-zinc-300 leading-relaxed {{ $isRtl ? 'border-r-4 pr-4 sm:pr-6 lg:pr-8' : 'border-l-4 pl-4 sm:pl-6 lg:pl-8' }} border-accent break-words">
                         {{ __('portfolio.why_hire_quote') }}
                     </blockquote>
                 </div>
             </section>
 
             {{-- Contact --}}
-            <section id="contact" class="py-16 sm:py-24 lg:py-32 border-t border-zinc-800/50">
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
-                    <h2 class="font-heading font-bold text-3xl sm:text-4xl text-white mb-2">{{ __('portfolio.contact_title') }}</h2>
-                    <p class="text-zinc-400 text-lg mb-10">{{ __('portfolio.contact_subtitle') }}</p>
+            <section id="contact" class="py-12 sm:py-20 lg:py-28 border-t border-zinc-800/50">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl w-full box-border">
+                    <h2 class="font-heading font-bold text-2xl sm:text-3xl lg:text-4xl text-white mb-2">{{ __('portfolio.contact_title') }}</h2>
+                    <p class="text-zinc-400 text-base sm:text-lg mb-8 sm:mb-10">{{ __('portfolio.contact_subtitle') }}</p>
 
-                    <div class="flex flex-wrap gap-4 mb-10">
+                    <div class="flex flex-wrap gap-3 sm:gap-4 mb-8 sm:mb-10">
                         <a href="https://www.linkedin.com/in/mohamedaalli/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-zinc-600 text-zinc-300 hover:border-accent hover:text-accent transition-colors">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                             LinkedIn
@@ -257,7 +280,7 @@
                             <label for="message" class="block text-sm font-medium text-zinc-400 mb-1.5">{{ __('portfolio.contact_message') }}</label>
                             <textarea id="message" name="message" rows="4" required class="w-full px-4 py-3 rounded-lg bg-zinc-900 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent resize-none" placeholder="{{ __('portfolio.contact_message_placeholder') }}"></textarea>
                         </div>
-                        <button type="submit" class="w-full sm:w-auto px-6 py-3 bg-accent text-charcoal font-semibold rounded-lg hover:bg-accent-hover transition-colors">
+                        <button type="submit" class="w-full sm:w-auto min-h-[44px] px-6 py-3 bg-accent text-charcoal font-semibold rounded-lg hover:bg-accent-hover transition-colors touch-manipulation">
                             {{ __('portfolio.contact_submit') }}
                         </button>
                     </form>
@@ -265,8 +288,8 @@
             </section>
         </main>
 
-        <footer class="border-t border-zinc-800/50 py-8">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl text-center text-zinc-500 text-sm">
+        <footer class="border-t border-zinc-800/50 py-6 sm:py-8">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl w-full box-border text-center text-zinc-500 text-sm break-words">
                 &copy; {{ date('Y') }} {{ __('portfolio.footer') }}
             </div>
         </footer>
