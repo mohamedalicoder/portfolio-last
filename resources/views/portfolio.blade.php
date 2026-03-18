@@ -18,6 +18,62 @@
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
+    <style>
+        /* Hero video: works even when Tailwind CSS is not loaded */
+        #hero .hero-video-wrap {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        #hero .hero-video-el {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.65;
+        }
+        #hero .hero-video-scrim {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(
+                to bottom,
+                rgba(15, 15, 15, 0.72) 0%,
+                rgba(15, 15, 15, 0.82) 45%,
+                rgba(10, 10, 10, 0.92) 100%
+            );
+        }
+        #hero .hero-glow {
+            position: absolute;
+            z-index: 2;
+            pointer-events: none;
+            top: 5rem;
+            right: 0;
+            width: 16rem;
+            height: 16rem;
+            border-radius: 9999px;
+            background: rgba(59, 130, 246, 0.12);
+            filter: blur(48px);
+        }
+        @media (min-width: 640px) {
+            #hero .hero-glow { width: 24rem; height: 24rem; filter: blur(64px); }
+        }
+        #hero .hero-inner {
+            position: relative;
+            z-index: 3;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #hero .hero-video-el { opacity: 0.25; }
+        }
+    </style>
 </head>
 
 <body class="bg-charcoal text-zinc-200 font-sans antialiased min-h-screen overflow-x-hidden">
@@ -47,7 +103,7 @@
                 </div>
 
                 {{-- Mobile: hamburger + overlay menu --}}
-                <input type="checkbox" id="nav-toggle" class="peer sr-only" aria-hidden="true">
+                <input type="checkbox" id="nav-toggle" class="peer sr-only">
                 <label for="nav-toggle"
                     class="nav-hamburger md:hidden flex flex-col justify-center w-10 h-10 rounded-lg border border-zinc-600 text-zinc-400 hover:text-white cursor-pointer touch-manipulation shrink-0"
                     aria-label="{{ $locale === 'ar' ? 'القائمة' : 'Menu' }}">
@@ -89,11 +145,16 @@
         <main class="flex-1 pt-14 sm:pt-16">
             {{-- Hero Section --}}
             <section id="hero" class="relative overflow-hidden py-12 sm:py-20 lg:py-28 xl:py-36">
-                <div class="absolute inset-0 bg-gradient-to-b from-charcoal via-charcoal to-charcoal-dark pointer-events-none"
-                    aria-hidden="true"></div>
-                <div class="absolute top-20 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none"
-                    aria-hidden="true"></div>
-                <div class="container relative mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl w-full box-border">
+                <div class="hero-video-wrap" aria-hidden="true">
+                    <video id="hero-video" class="hero-video-el" autoplay muted loop playsinline preload="auto"
+                        aria-hidden="true" tabindex="-1">
+                        <source src="{{ url('assets/esso-video.mp4') }}" type="video/mp4">
+                        <track kind="captions" src="{{ url('assets/esso-video.vtt') }}" srclang="en" label="English" default>
+                    </video>
+                </div>
+                <div class="hero-video-scrim" aria-hidden="true"></div>
+                <div class="hero-glow" aria-hidden="true"></div>
+                <div class="hero-inner container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl w-full box-border">
                     <p class="text-accent font-semibold text-xs sm:text-sm uppercase tracking-widest mb-3 sm:mb-4">
                         {{ __('portfolio.hero_badge') }}</p>
                     <h1
@@ -118,6 +179,20 @@
                         </a>
                     </div>
                 </div>
+                <script>
+                    (function () {
+                        var v = document.getElementById('hero-video');
+                        if (!v) return;
+                        v.muted = true;
+                        v.setAttribute('muted', '');
+                        v.play().catch(function () {
+                            document.addEventListener('click', function once() {
+                                v.play().catch(function () {});
+                                document.removeEventListener('click', once);
+                            }, { once: true });
+                        });
+                    })();
+                </script>
             </section>
 
             {{-- Featured Projects (Bento Grid) --}}
